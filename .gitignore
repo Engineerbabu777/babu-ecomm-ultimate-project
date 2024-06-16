@@ -24,6 +24,10 @@
 ./server/.env
 /server/env
 
+/client/.env
+/server/config/.env
+./server/config/.env
+/server/config/env
 
 npm-debug.log*
 yarn-debug.log*
