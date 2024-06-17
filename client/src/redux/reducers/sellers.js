@@ -1,26 +1,37 @@
+import { createReducer } from "@reduxjs/toolkit";
 
-import axios from "axios";
-import { server } from "../../server";
-
-// get all sellers --- admin
-export const getAllSellers = () => async (dispatch) => {
-  try {
-    dispatch({
-      type: "getAllSellersRequest",
-    });
-
-    const { data } = await axios.get(`${server}/shop/admin-all-sellers`, {
-      withCredentials: true,
-    });
-
-    dispatch({
-      type: "getAllSellersSuccess",
-      payload: data.sellers,
-    });
-  } catch (error) {
-    dispatch({
-      type: "getAllSellerFailed",
-    //   payload: error.response.data.message,
-    });
-  }
+const initialState = {
+  isLoading: true,
 };
+
+export const sellerReducer = createReducer(initialState, {
+  LoadSellerRequest: (state) => {
+    state.isLoading = true;
+  },
+  LoadSellerSuccess: (state, action) => {
+    state.isSeller = true;
+    state.isLoading = false;
+    state.seller = action.payload;
+  },
+  LoadSellerFail: (state, action) => {
+    state.isLoading = false;
+    state.error = action.payload;
+    state.isSeller = false;
+  },
+
+  // get all sellers ---admin
+  getAllSellersRequest: (state) => {
+    state.isLoading = true;
+  },
+  getAllSellersSuccess: (state, action) => {
+    state.isLoading = false;
+    state.sellers = action.payload;
+  },
+  getAllSellerFailed: (state, action) => {
+    state.isLoading = false;
+    state.error = action.payload;
+  },
+  clearErrors: (state) => {
+    state.error = null;
+  },
+});
