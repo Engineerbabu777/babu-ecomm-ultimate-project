@@ -1,48 +1,83 @@
 const mongoose = require("mongoose");
 
-const orderSchema = new mongoose.Schema({
-    cart:{
-        type: Array,
-        required: true,
-    },
-    shippingAddress:{
-        type: Object,
-        required: true,
-    },
-    user:{
-        type: Object,
-        required: true,
-    },
-    totalPrice:{
-        type: Number,
-        required: true,
-    },
-    status:{
+const productSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: [true, "Please enter your product name!"],
+  },
+  description: {
+    type: String,
+    required: [true, "Please enter your product description!"],
+  },
+  category: {
+    type: String,
+    required: [true, "Please enter your product category!"],
+  },
+  tags: {
+    type: String,
+  },
+  originalPrice: {
+    type: Number,
+  },
+  discountPrice: {
+    type: Number,
+    required: [true, "Please enter your product price!"],
+  },
+  stock: {
+    type: Number,
+    required: [true, "Please enter your product stock!"],
+  },
+  images: [
+    {
+      public_id: {
         type: String,
-        default: "Processing",
+        required: true,
+      },
+      url: {
+        type: String,
+        required: true,
+      },
     },
-    paymentInfo:{
-        id:{
-            type: String,
-        },
-        status: {
-            type: String,
-        },
-        type:{
-            type: String,
-        },
-    },
-    paidAt:{
+  ],
+  reviews: [
+    {
+      user: {
+        type: Object,
+      },
+      rating: {
+        type: Number,
+      },
+      comment: {
+        type: String,
+      },
+      productId: {
+        type: String,
+      },
+      createdAt:{
         type: Date,
         default: Date.now(),
+      }
     },
-    deliveredAt: {
-        type: Date,
-    },
-    createdAt:{
-        type: Date,
-        default: Date.now(),
-    },
+  ],
+  ratings: {
+    type: Number,
+  },
+  shopId: {
+    type: String,
+    required: true,
+  },
+  shop: {
+    type: Object,
+    required: true,
+  },
+  sold_out: {
+    type: Number,
+    default: 0,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now(),
+  },
 });
 
-module.exports = mongoose.model("Order", orderSchema);
+module.exports = mongoose.model("Product", productSchema);
