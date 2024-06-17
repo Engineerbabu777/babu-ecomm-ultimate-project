@@ -1,113 +1,64 @@
-import axios from "axios";
-import { server } from "../../server";
+import { createReducer } from "@reduxjs/toolkit";
 
-// create product
-export const createProduct =
-  (
-    name,
-    description,
-    category,
-    tags,
-    originalPrice,
-    discountPrice,
-    stock,
-    shopId,
-    images
-  ) =>
-  async (dispatch) => {
-    try {
-      dispatch({
-        type: "productCreateRequest",
-      });
-
-      const { data } = await axios.post(
-        `${server}/product/create-product`,
-        name,
-        description,
-        category,
-        tags,
-        originalPrice,
-        discountPrice,
-        stock,
-        shopId,
-        images,
-      );
-      dispatch({
-        type: "productCreateSuccess",
-        payload: data.product,
-      });
-    } catch (error) {
-      dispatch({
-        type: "productCreateFail",
-        payload: error.response.data.message,
-      });
-    }
-  };
-
-// get All Products of a shop
-export const getAllProductsShop = (id) => async (dispatch) => {
-  try {
-    dispatch({
-      type: "getAllProductsShopRequest",
-    });
-
-    const { data } = await axios.get(
-      `${server}/product/get-all-products-shop/${id}`
-    );
-    dispatch({
-      type: "getAllProductsShopSuccess",
-      payload: data.products,
-    });
-  } catch (error) {
-    dispatch({
-      type: "getAllProductsShopFailed",
-      payload: error.response.data.message,
-    });
-  }
+const initialState = {
+  isLoading: true,
 };
 
-// delete product of a shop
-export const deleteProduct = (id) => async (dispatch) => {
-  try {
-    dispatch({
-      type: "deleteProductRequest",
-    });
+export const productReducer = createReducer(initialState, {
+  productCreateRequest: (state) => {
+    state.isLoading = true;
+  },
+  productCreateSuccess: (state, action) => {
+    state.isLoading = false;
+    state.product = action.payload;
+    state.success = true;
+  },
+  productCreateFail: (state, action) => {
+    state.isLoading = false;
+    state.error = action.payload;
+    state.success = false;
+  },
 
-    const { data } = await axios.delete(
-      `${server}/product/delete-shop-product/${id}`,
-      {
-        withCredentials: true,
-      }
-    );
+  // get all products of shop
+  getAllProductsShopRequest: (state) => {
+    state.isLoading = true;
+  },
+  getAllProductsShopSuccess: (state, action) => {
+    state.isLoading = false;
+    state.products = action.payload;
+  },
+  getAllProductsShopFailed: (state, action) => {
+    state.isLoading = false;
+    state.error = action.payload;
+  },
 
-    dispatch({
-      type: "deleteProductSuccess",
-      payload: data.message,
-    });
-  } catch (error) {
-    dispatch({
-      type: "deleteProductFailed",
-      payload: error.response.data.message,
-    });
-  }
-};
+  // delete product of a shop
+  deleteProductRequest: (state) => {
+    state.isLoading = true;
+  },
+  deleteProductSuccess: (state, action) => {
+    state.isLoading = false;
+    state.message = action.payload;
+  },
+  deleteProductFailed: (state, action) => {
+    state.isLoading = false;
+    state.error = action.payload;
+  },
 
-// get all products
-export const getAllProducts = () => async (dispatch) => {
-  try {
-    dispatch({
-      type: "getAllProductsRequest",
-    });
-
-    const { data } = await axios.get(`${server}/product/get-all-products`);
-    dispatch({
-      type: "getAllProductsSuccess",
-      payload: data.products,
-    });
-  } catch (error) {
-    dispatch({
-      type: "getAllProductsFailed",
-      payload: error.response.data.message,
-    });
-  }
-};
+  // get all products
+  getAllProductsRequest: (state) => {
+    state.isLoading = true;
+  },
+  getAllProductsSuccess: (state, action) => {
+    state.isLoading = false;
+    state.allProducts = action.payload;
+  },
+  getAllProductsFailed: (state, action) => {
+    state.isLoading = false;
+    state.error = action.payload;
+  },
+  
+  clearErrors: (state) => {
+    state.error = null;
+  },
+});
